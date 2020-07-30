@@ -6,5 +6,7 @@ and Docker.
 * Links
 ** PXE Boot
   - https://linuxhit.com/pxe-boot-what-is-pxe-how-does-it-work/
+  - https://wiki.archlinux.org/index.php/Preboot_Execution_Environment
 ** Ansible
   - https://docs.ansible.com/ansible/latest/user_guide/basic_concepts.html
+  - https://gist.github.com/alces/caa3e7e5f46f9595f715f0f55eef65c1
