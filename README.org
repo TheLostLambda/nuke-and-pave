@@ -1,0 +1,10 @@
+/Nuke and Pave (NAP)/
+
+Automatically boots, installs, and configures a new server using PXE, Ansible,
+and Docker.
+
+* Links
+** PXE Boot
+  - https://linuxhit.com/pxe-boot-what-is-pxe-how-does-it-work/
+** Ansible
+  - https://docs.ansible.com/ansible/latest/user_guide/basic_concepts.html
