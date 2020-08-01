@@ -1,0 +1,9 @@
+port=0
+interface=enp34s0                                                    
+bind-interfaces
+dhcp-range=192.168.42.50,192.168.42.150,12h
+dhcp-userclass=set:ipxe,iPXE
+dhcp-boot=arch/boot/ipxe.efi
+dhcp-boot=tag:ipxe,/arch/boot/boot.ipxe                       
+enable-tftp
+tftp-root=/mnt/archiso

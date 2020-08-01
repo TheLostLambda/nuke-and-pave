@@ -3,10 +3,59 @@
 Automatically boots, installs, and configures a new server using PXE, Ansible,
 and Docker.
 
+* Tasks
+  - [ ] Look into using [[https://www.flashrom.org/Flashrom][flashrom]] to flash [[https://ipxe.org/start][iPXE]]
+  - [ ] Add legacy BIOS support?
+  - [ ] iPXE script [[*Multiple NICs][breaks with several interfaces]]
+
 * Links
+** Docker
+  - https://medium.com/@andreacolangelo/sibling-docker-container-2e664858f87a
 ** PXE Boot
   - https://linuxhit.com/pxe-boot-what-is-pxe-how-does-it-work/
   - https://wiki.archlinux.org/index.php/Preboot_Execution_Environment
 ** Ansible
   - https://docs.ansible.com/ansible/latest/user_guide/basic_concepts.html
   - https://gist.github.com/alces/caa3e7e5f46f9595f715f0f55eef65c1
+
+* Logbook
+  - 2020-08-01 (12:46) :: Started working on setting up my Arch Box as a PXE
+    boot server, following the Arch Wiki
+  - 2020-08-01 (13:56) :: The official Arch ISO can't boot in UEFI mode, so I'm
+    going to need to get a bit adventurous
+  - 2020-08-01 (16:09) :: Got a boot with iPXE! I'm starting on a script for
+    passing the kernel the proper PXE archiso options (like ~archiso_http_srv~)
+
+* Explainations
+** iPXE Boot of Arch
+This is an annotated entry from ~archiso_pxe.cfg~:
+#+BEGIN_SRC sh
+LABEL arch64_http
+TEXT HELP
+Boot the Arch Linux live medium using HTTP.
+It allows you to install Arch Linux or perform system maintenance.
+ENDTEXT
+MENU LABEL Arch Linux install medium (x86_64, HTTP)
+# This selects a linux kernel to boot
+LINUX boot/x86_64/vmlinuz-linux
+# This line adds: initrd=intel-ucode.img initrd=amd-ucode.img initrd=archiso.img
+# to the kernel boot parameters
+INITRD boot/intel-ucode.img,boot/amd-ucode.img,boot/x86_64/archiso.img
+# These options are added to the START of the kernel parameters, despite the name...
+# The archisobasedir is appended to the archiso_http_srv URL and is the base from which 
+# the airootfs is pulled. The default is also "arch", so that parameter can be dropped.
+# The archiso_http_srv parameter tells the initramfs to pull the airootfs from that
+# server and is required to boot with a root partition. Finally, %{pxeserver} is a
+# special syslinux parameter passed by `dhcp-option-force=66,192.168.0.1`
+APPEND archisobasedir=arch archiso_http_srv=http://${pxeserver}/
+# This turns on bitflags 1 and 2. 1 adds the ip parameter to the kernel call, but
+# syslinux recommends that you just use ip=dhcp. 2 sets the syslinux boot interface
+# via bootif= and isn't needed to boot with iPXE
+SYSAPPEND 3
+#+END_SRC
+
+* Issues
+** Multiple NICs
+  - Adding a second NIC hangs the system on initrd, check if this happens with
+    the official image as well.
+  - Check the ~cat /proc/cmdline~ of the official image and compare

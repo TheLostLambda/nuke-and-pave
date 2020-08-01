@@ -1,0 +1,16 @@
+#!ipxe
+
+# Set a couple of parameters
+set base-url http://${gateway}/arch/boot
+
+# Pull the kernel image and set it as the default boot image with the following options
+kernel ${base-url}/x86_64/vmlinuz-linux initrd=intel-ucode.img initrd=amd-ucode.img \
+       initrd=archiso.img ip=dhcp archiso_http_srv=http://${gateway}/
+
+# Pull some the various ram-disk images
+initrd ${base-url}/intel-ucode.img
+initrd ${base-url}/amd-ucode.img
+initrd ${base-url}/x86_64/archiso.img
+
+# Boot into the system!
+boot
